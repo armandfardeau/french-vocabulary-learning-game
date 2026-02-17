@@ -15,6 +15,12 @@ const applicationTables = {
     totalQuestions: v.number(),
     correctAnswers: v.number(),
   }).index("by_team", ["teamId"]),
+
+  teamQuestionUsage: defineTable({
+    teamId: v.id("teams"),
+    mode: v.union(v.literal("antonym"), v.literal("synonym"), v.literal("wordFamily"), v.literal("lexicalField")),
+    usedQuestionIds: v.array(v.id("vocabulary")),
+  }).index("by_team_mode", ["teamId", "mode"]),
   
   vocabulary: defineTable({
     word: v.string(),

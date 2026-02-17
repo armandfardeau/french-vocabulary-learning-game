@@ -190,18 +190,60 @@ function GamePlay({
   const [questions, setQuestions] = useState<any[]>([]);
   const [answers, setAnswers] = useState<string[]>([]);
   const [gameFinished, setGameFinished] = useState(false);
-  const [questionKey, setQuestionKey] = useState(0);
+  const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
+  const [totalQuestions, setTotalQuestions] = useState(5);
 
-  const getRandomQuestion = useQuery(api.games.getRandomQuestion, { mode, key: questionKey });
+  const getNextQuestion = useMutation(api.games.getNextQuestion);
   const submitAnswer = useMutation(api.games.submitAnswer);
 
-  const totalQuestions = 5;
-
   useEffect(() => {
-    if (getRandomQuestion && questions.length <= currentQuestion) {
-      setQuestions(prev => [...prev, getRandomQuestion]);
-    }
-  }, [getRandomQuestion, questions.length, currentQuestion]);
+    let cancelled = false;
+
+    const loadQuestion = async () => {
+      if (totalQuestions === 0) return;
+      if (isLoadingQuestion) return;
+      if (questions.length > currentQuestion) return;
+
+      setIsLoadingQuestion(true);
+
+      try {
+        const result = await getNextQuestion({ teamId, mode });
+        if (cancelled) return;
+
+        if (!result?.question) {
+          setTotalQuestions(0);
+          return;
+        }
+
+        if (questions.length === 0) {
+          const availableCount = result.availableCount ?? 0;
+          setTotalQuestions(Math.min(5, availableCount));
+        }
+
+        setQuestions((prev) => [...prev, result.question]);
+      } catch (error) {
+        toast.error("Erreur lors du chargement de la question");
+      } finally {
+        if (!cancelled) {
+          setIsLoadingQuestion(false);
+        }
+      }
+    };
+
+    void loadQuestion();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    currentQuestion,
+    getNextQuestion,
+    isLoadingQuestion,
+    mode,
+    questions.length,
+    teamId,
+    totalQuestions,
+  ]);
 
   const handleAnswerSelect = (answer: string) => {
     if (showResult) return;
@@ -234,8 +276,6 @@ function GamePlay({
     setCurrentQuestion(prev => prev + 1);
     setSelectedAnswer(null);
     setShowResult(false);
-    // Trigger a new random question by changing the key
-    setQuestionKey(prev => prev + 1);
   };
 
   const finishGame = async () => {
@@ -263,6 +303,22 @@ function GamePlay({
       toast.error("Erreur lors de l'enregistrement du score");
     }
   };
+
+  if (totalQuestions === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-lg text-gray-600 mb-6">
+          Aucune question disponible pour ce mode pour le moment.
+        </p>
+        <button
+          onClick={onBackToMenu}
+          className="text-blue-600 hover:text-blue-800 font-semibold"
+        >
+          ← Retour au menu
+        </button>
+      </div>
+    );
+  }
 
   if (questions.length <= currentQuestion) {
     return (

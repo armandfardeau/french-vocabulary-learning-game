@@ -83,31 +83,61 @@ export const initializeVocabulary = mutation({
   },
 });
 
-export const getRandomQuestion = query({
-  args: { 
+export const getNextQuestion = mutation({
+  args: {
+    teamId: v.id("teams"),
     mode: v.union(v.literal("antonym"), v.literal("synonym"), v.literal("wordFamily"), v.literal("lexicalField")),
-    key: v.optional(v.number())
   },
   handler: async (ctx, args) => {
     const questions = await ctx.db
       .query("vocabulary")
       .withIndex("by_type", (q) => q.eq("type", args.mode))
       .collect();
-    
+
     if (questions.length === 0) {
-      return null;
+      return { question: null, availableCount: 0, totalCount: 0 };
     }
-    
-    // Use the key to ensure we get different questions each time
-    const randomIndex = Math.floor(Math.random() * questions.length);
-    const question = questions[randomIndex];
-    
-    // Shuffle the options to randomize answer positions
-    const shuffledOptions = shuffleArray(question.options);
-    
+
+    const usage = await ctx.db
+      .query("teamQuestionUsage")
+      .withIndex("by_team_mode", (q) => q.eq("teamId", args.teamId).eq("mode", args.mode))
+      .first();
+
+    let usedQuestionIds = usage?.usedQuestionIds ?? [];
+    if (usedQuestionIds.length >= questions.length) {
+      usedQuestionIds = [];
+    }
+
+    let availableQuestions = questions.filter(
+      (question) => !usedQuestionIds.includes(question._id),
+    );
+
+    if (availableQuestions.length === 0) {
+      usedQuestionIds = [];
+      availableQuestions = questions;
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+    const selectedQuestion = availableQuestions[randomIndex];
+    const updatedUsedQuestionIds = [...usedQuestionIds, selectedQuestion._id];
+
+    if (usage) {
+      await ctx.db.patch(usage._id, { usedQuestionIds: updatedUsedQuestionIds });
+    } else {
+      await ctx.db.insert("teamQuestionUsage", {
+        teamId: args.teamId,
+        mode: args.mode,
+        usedQuestionIds: updatedUsedQuestionIds,
+      });
+    }
+
     return {
-      ...question,
-      options: shuffledOptions
+      question: {
+        ...selectedQuestion,
+        options: shuffleArray(selectedQuestion.options),
+      },
+      availableCount: availableQuestions.length,
+      totalCount: questions.length,
     };
   },
 });
