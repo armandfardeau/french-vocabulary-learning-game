@@ -1,0 +1,9 @@
+[build]
+  command = "npx convex deploy --cmd 'npm run build' --cmd-url-env-var-name VITE_CONVEX_URL"
+  publish = "dist"
+
+# Ensure the SPA is served for all routes.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

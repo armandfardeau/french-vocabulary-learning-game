@@ -24,6 +24,17 @@ Check out the [Convex docs](https://docs.convex.dev/) for more information on ho
 * Check out the [Hosting and Deployment](https://docs.convex.dev/production/) docs for how to deploy your app
 * Read the [Best Practices](https://docs.convex.dev/understanding/best-practices/) guide for tips on how to improve you app further
 
+## Deploying to Netlify (Convex Auth)
+
+This repo includes a `netlify.toml` that deploys Convex and builds the Vite app in one step.
+
+1. In Netlify, set the environment variable `CONVEX_DEPLOY_KEY` for your site.
+2. Make sure the build command is picked up from `netlify.toml` (or set it to:
+`npx convex deploy --cmd 'npm run build' --cmd-url-env-var-name VITE_CONVEX_URL`).
+3. Configure Convex Auth production environment variables on your Convex deployment (not in Netlify) by running `npx @convex-dev/auth --prod` locally and following the prompts.
+4. If you use OAuth or magic links, set `SITE_URL` and any provider secrets on the Convex deployment.
+5. Redeploy from Netlify to publish the site with the production Convex URL wired into `VITE_CONVEX_URL`.
+
 ## HTTP API
 
 User-defined http routes are defined in the `convex/router.ts` file. We split these routes into a separate file from `convex/http.ts` to allow us to prevent the LLM from modifying the authentication routes.
