@@ -48,6 +48,14 @@ const vocabularyData = {
   ],
 };
 
+function normalizeValue(value: string): string {
+  return value.trim().toLowerCase().normalize("NFKC");
+}
+
+function buildUniqueKey(entry: { type: string; word: string; answer: string }): string {
+  return `${normalizeValue(entry.type)}|${normalizeValue(entry.word)}|${normalizeValue(entry.answer)}`;
+}
+
 // Fisher-Yates shuffle algorithm
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -75,6 +83,11 @@ export const initializeVocabulary = mutation({
           type: type as any,
           answer: wordData.answer,
           options: wordData.options,
+          uniqueKey: buildUniqueKey({
+            type,
+            word: wordData.word,
+            answer: wordData.answer,
+          }),
         });
       }
     }
@@ -139,6 +152,108 @@ export const getNextQuestion = mutation({
       availableCount: availableQuestions.length,
       totalCount: questions.length,
     };
+  },
+});
+
+export const importVocabulary = mutation({
+  args: {
+    entries: v.array(
+      v.object({
+        word: v.string(),
+        type: v.union(
+          v.literal("antonym"),
+          v.literal("synonym"),
+          v.literal("wordFamily"),
+          v.literal("lexicalField"),
+        ),
+        answer: v.string(),
+        options: v.array(v.string()),
+        explanation: v.optional(v.string()),
+      }),
+    ),
+  },
+  handler: async (ctx, args) => {
+    let inserted = 0;
+    let skipped = 0;
+    const seenKeys = new Set<string>();
+
+    for (const entry of args.entries) {
+      const uniqueKey = buildUniqueKey(entry);
+
+      if (seenKeys.has(uniqueKey)) {
+        skipped += 1;
+        continue;
+      }
+      seenKeys.add(uniqueKey);
+
+      let existing = await ctx.db
+        .query("vocabulary")
+        .withIndex("by_unique_key", (q) => q.eq("uniqueKey", uniqueKey))
+        .first();
+
+      if (!existing) {
+        existing = await ctx.db
+          .query("vocabulary")
+          .withIndex("by_type", (q) => q.eq("type", entry.type))
+          .filter((q) => q.eq(q.field("word"), entry.word))
+          .filter((q) => q.eq(q.field("answer"), entry.answer))
+          .first();
+      }
+
+      if (existing) {
+        if (!existing.uniqueKey) {
+          await ctx.db.patch(existing._id, { uniqueKey });
+        }
+        skipped += 1;
+        continue;
+      }
+
+      await ctx.db.insert("vocabulary", {
+        word: entry.word,
+        type: entry.type,
+        answer: entry.answer,
+        options: entry.options,
+        explanation: entry.explanation,
+        uniqueKey,
+      });
+
+      inserted += 1;
+    }
+
+    return { inserted, skipped };
+  },
+});
+
+export const backfillVocabularyKeys = mutation({
+  args: {
+    removeDuplicates: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const entries = await ctx.db.query("vocabulary").collect();
+    const seen = new Map<string, string>();
+    let updated = 0;
+    let deleted = 0;
+
+    for (const entry of entries) {
+      const uniqueKey = buildUniqueKey(entry);
+
+      const existingId = seen.get(uniqueKey);
+      if (existingId) {
+        if (args.removeDuplicates) {
+          await ctx.db.delete(entry._id);
+          deleted += 1;
+        }
+        continue;
+      }
+
+      seen.set(uniqueKey, entry._id);
+      if (entry.uniqueKey !== uniqueKey) {
+        await ctx.db.patch(entry._id, { uniqueKey });
+        updated += 1;
+      }
+    }
+
+    return { updated, deleted };
   },
 });
 

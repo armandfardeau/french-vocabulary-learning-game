@@ -22,12 +22,16 @@ const gameModeDescriptions = {
 
 export function GameApp() {
   const [currentTeamId, setCurrentTeamId] = useState<Id<"teams"> | null>(null);
+  const [currentTeamName, setCurrentTeamName] = useState<string | null>(null);
   const [currentMode, setCurrentMode] = useState<GameMode | null>(null);
   const [gameState, setGameState] = useState<"menu" | "playing" | "results">("menu");
   
   const createTeam = useMutation(api.teams.createTeam);
   const initializeVocabulary = useMutation(api.games.initializeVocabulary);
   const leaderboard = useQuery(api.teams.getLeaderboard);
+  const teamInfo = useQuery(api.teams.getTeam,
+    currentTeamId ? { teamId: currentTeamId } : "skip"
+  );
   const teamStats = useQuery(api.games.getTeamStats, 
     currentTeamId ? { teamId: currentTeamId } : "skip"
   );
@@ -41,6 +45,7 @@ export function GameApp() {
     try {
       const result = await createTeam();
       setCurrentTeamId(result.teamId);
+      setCurrentTeamName(result.teamName);
       toast.success(`Équipe créée: ${result.teamName}! 🎉`);
     } catch (error) {
       toast.error("Erreur lors de la création de l'équipe");
@@ -84,6 +89,7 @@ export function GameApp() {
     return (
       <GamePlay 
         teamId={currentTeamId}
+        teamName={currentTeamName ?? teamInfo?.name ?? null}
         mode={currentMode}
         onGameEnd={endGame}
         onBackToMenu={backToMenu}
@@ -95,11 +101,14 @@ export function GameApp() {
     return (
       <GameResults 
         teamId={currentTeamId}
+        teamName={currentTeamName ?? teamInfo?.name ?? null}
         mode={currentMode}
         onBackToMenu={backToMenu}
       />
     );
   }
+
+  const resolvedTeamName = currentTeamName ?? teamInfo?.name ?? null;
 
   return (
     <div className="space-y-8">
@@ -108,6 +117,9 @@ export function GameApp() {
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Choisis ton mode de jeu
         </h1>
+        {resolvedTeamName && (
+          <p className="text-sm text-gray-500">Équipe: {resolvedTeamName}</p>
+        )}
         {teamStats && (
           <p className="text-lg text-gray-600">
             Score total: {teamStats.total.score} points
@@ -174,11 +186,13 @@ export function GameApp() {
 
 function GamePlay({ 
   teamId, 
+  teamName,
   mode, 
   onGameEnd, 
   onBackToMenu 
 }: { 
   teamId: Id<"teams">;
+  teamName: string | null;
   mode: GameMode;
   onGameEnd: () => void;
   onBackToMenu: () => void;
@@ -190,7 +204,6 @@ function GamePlay({
   const [questions, setQuestions] = useState<any[]>([]);
   const [answers, setAnswers] = useState<string[]>([]);
   const [gameFinished, setGameFinished] = useState(false);
-  const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
   const [totalQuestions, setTotalQuestions] = useState(5);
 
   const getNextQuestion = useMutation(api.games.getNextQuestion);
@@ -201,10 +214,7 @@ function GamePlay({
 
     const loadQuestion = async () => {
       if (totalQuestions === 0) return;
-      if (isLoadingQuestion) return;
       if (questions.length > currentQuestion) return;
-
-      setIsLoadingQuestion(true);
 
       try {
         const result = await getNextQuestion({ teamId, mode });
@@ -223,10 +233,6 @@ function GamePlay({
         setQuestions((prev) => [...prev, result.question]);
       } catch (error) {
         toast.error("Erreur lors du chargement de la question");
-      } finally {
-        if (!cancelled) {
-          setIsLoadingQuestion(false);
-        }
       }
     };
 
@@ -238,7 +244,6 @@ function GamePlay({
   }, [
     currentQuestion,
     getNextQuestion,
-    isLoadingQuestion,
     mode,
     questions.length,
     teamId,
@@ -342,6 +347,9 @@ function GamePlay({
             ← Retour au menu
           </button>
           <div className="text-right">
+            {teamName && (
+              <div className="text-xs text-gray-500">Équipe: {teamName}</div>
+            )}
             <div className="text-sm text-gray-600">
               Question {currentQuestion + 1}/{totalQuestions}
             </div>
@@ -406,10 +414,12 @@ function GamePlay({
 
 function GameResults({ 
   teamId, 
+  teamName,
   mode, 
   onBackToMenu 
 }: { 
   teamId: Id<"teams">;
+  teamName: string | null;
   mode: GameMode;
   onBackToMenu: () => void;
 }) {
@@ -421,6 +431,9 @@ function GameResults({
         <h2 className="text-3xl font-bold text-gray-800 mb-4">
           Partie terminée! 🎉
         </h2>
+        {teamName && (
+          <p className="text-sm text-gray-500 mb-4">Équipe: {teamName}</p>
+        )}
         
         <div className="text-6xl mb-4">
           {teamStats && teamStats[mode].score >= 40 ? '🏆' : 

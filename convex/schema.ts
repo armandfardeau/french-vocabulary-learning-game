@@ -28,7 +28,10 @@ const applicationTables = {
     answer: v.string(),
     options: v.array(v.string()),
     explanation: v.optional(v.string()),
-  }).index("by_type", ["type"]),
+    uniqueKey: v.optional(v.string()),
+  })
+    .index("by_type", ["type"])
+    .index("by_unique_key", ["uniqueKey"]),
 };
 
 export default defineSchema({

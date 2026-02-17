@@ -1,0 +1,308 @@
+[
+  {
+    "word": "rapide",
+    "type": "synonym",
+    "answer": "vite",
+    "options": ["vite", "lent", "calme", "lourd"]
+  },
+  {
+    "word": "chaud",
+    "type": "antonym",
+    "answer": "froid",
+    "options": ["froid", "tiède", "brûlant", "glacé"]
+  },
+  {
+    "word": "pomme, banane, orange",
+    "type": "lexicalField",
+    "answer": "fruits",
+    "options": ["fruits", "légumes", "couleurs", "formes"]
+  },
+  {
+    "word": "connaître",
+    "type": "wordFamily",
+    "answer": "reconnaître",
+    "options": ["reconnaître", "paraître", "naître", "croître"]
+  },
+  {
+    "word": "triste",
+    "type": "synonym",
+    "answer": "malheureux",
+    "options": ["malheureux", "joyeux", "fier", "curieux"]
+  },
+  {
+    "word": "aider",
+    "type": "synonym",
+    "answer": "secourir",
+    "options": ["secourir", "ignorer", "punir", "trahir"]
+  },
+  {
+    "word": "fatigué",
+    "type": "synonym",
+    "answer": "épuisé",
+    "options": ["épuisé", "reposée", "réveillé", "actif"]
+  },
+  {
+    "word": "facile",
+    "type": "synonym",
+    "answer": "simple",
+    "options": ["simple", "compliqué", "difficile", "long"]
+  },
+  {
+    "word": "ancien",
+    "type": "synonym",
+    "answer": "vieux",
+    "options": ["vieux", "neuf", "jeune", "moderne"]
+  },
+  {
+    "word": "acheter",
+    "type": "synonym",
+    "answer": "acquérir",
+    "options": ["acquérir", "vendre", "prêter", "donner"]
+  },
+  {
+    "word": "rire",
+    "type": "synonym",
+    "answer": "sourire",
+    "options": ["sourire", "pleurer", "crier", "gémir"]
+  },
+  {
+    "word": "clair",
+    "type": "antonym",
+    "answer": "sombre",
+    "options": ["sombre", "lumineux", "brillant", "terne"]
+  },
+  {
+    "word": "haut",
+    "type": "antonym",
+    "answer": "bas",
+    "options": ["bas", "grand", "élevé", "long"]
+  },
+  {
+    "word": "plein",
+    "type": "antonym",
+    "answer": "vide",
+    "options": ["vide", "rempli", "complet", "chargé"]
+  },
+  {
+    "word": "jeune",
+    "type": "antonym",
+    "answer": "vieux",
+    "options": ["vieux", "récent", "nouveau", "petit"]
+  },
+  {
+    "word": "ouvrir",
+    "type": "antonym",
+    "answer": "fermer",
+    "options": ["fermer", "découvrir", "casser", "entrer"]
+  },
+  {
+    "word": "ami",
+    "type": "synonym",
+    "answer": "copain",
+    "options": ["copain", "ennemi", "voisin", "client"]
+  },
+  {
+    "word": "chance",
+    "type": "synonym",
+    "answer": "opportunité",
+    "options": ["opportunité", "malchance", "danger", "crime"]
+  },
+  {
+    "word": "début",
+    "type": "synonym",
+    "answer": "commencement",
+    "options": ["commencement", "fin", "résultat", "pause"]
+  },
+  {
+    "word": "calme",
+    "type": "synonym",
+    "answer": "tranquille",
+    "options": ["tranquille", "agité", "bruyant", "nerveux"]
+  },
+  {
+    "word": "important",
+    "type": "synonym",
+    "answer": "essentiel",
+    "options": ["essentiel", "banal", "inutile", "léger"]
+  },
+  {
+    "word": "possible",
+    "type": "wordFamily",
+    "answer": "impossible",
+    "options": ["impossible", "possible", "posément", "posséder"]
+  },
+  {
+    "word": "lire",
+    "type": "wordFamily",
+    "answer": "relire",
+    "options": ["relire", "rêver", "rédire", "relaxer"]
+  },
+  {
+    "word": "placer",
+    "type": "wordFamily",
+    "answer": "déplacer",
+    "options": ["déplacer", "placide", "plaisir", "planter"]
+  },
+  {
+    "word": "chauffer",
+    "type": "wordFamily",
+    "answer": "réchauffer",
+    "options": ["réchauffer", "chauve", "chouette", "changer"]
+  },
+  {
+    "word": "capable",
+    "type": "wordFamily",
+    "answer": "incapable",
+    "options": ["incapable", "capable", "capricieux", "captiver"]
+  },
+  {
+    "word": "rose, tulipe, orchidée",
+    "type": "lexicalField",
+    "answer": "fleurs",
+    "options": ["fleurs", "fruits", "arbres", "outils"]
+  },
+  {
+    "word": "marteau, scie, tournevis",
+    "type": "lexicalField",
+    "answer": "outils",
+    "options": ["outils", "meubles", "vêtements", "animaux"]
+  },
+  {
+    "word": "été, hiver, printemps",
+    "type": "lexicalField",
+    "answer": "saisons",
+    "options": ["saisons", "mois", "jours", "heures"]
+  },
+  {
+    "word": "poisson, crevette, crabe",
+    "type": "lexicalField",
+    "answer": "fruits de mer",
+    "options": ["fruits de mer", "légumes", "desserts", "boissons"]
+  },
+  {
+    "word": "guitare, piano, violon",
+    "type": "lexicalField",
+    "answer": "instruments",
+    "options": ["instruments", "sports", "transports", "métiers"]
+  },
+  {
+    "word": "bruyant",
+    "type": "antonym",
+    "answer": "silencieux",
+    "options": ["silencieux", "fort", "rapide", "grand"]
+  },
+  {
+    "word": "sec",
+    "type": "antonym",
+    "answer": "humide",
+    "options": ["humide", "dur", "solide", "propre"]
+  },
+  {
+    "word": "proche",
+    "type": "antonym",
+    "answer": "loin",
+    "options": ["loin", "près", "rapide", "facile"]
+  },
+  {
+    "word": "gagner",
+    "type": "antonym",
+    "answer": "perdre",
+    "options": ["perdre", "rester", "avancer", "découvrir"]
+  },
+  {
+    "word": "utile",
+    "type": "antonym",
+    "answer": "inutile",
+    "options": ["inutile", "pratique", "simple", "capable"]
+  },
+  {
+    "word": "collège",
+    "type": "synonym",
+    "answer": "école",
+    "options": ["école", "maison", "hôpital", "marché"]
+  },
+  {
+    "word": "travail",
+    "type": "synonym",
+    "answer": "emploi",
+    "options": ["emploi", "loisir", "repos", "vacances"]
+  },
+  {
+    "word": "route",
+    "type": "synonym",
+    "answer": "chemin",
+    "options": ["chemin", "mur", "toit", "pluie"]
+  },
+  {
+    "word": "histoire",
+    "type": "synonym",
+    "answer": "récit",
+    "options": ["récit", "silence", "erreur", "rage"]
+  },
+  {
+    "word": "banal",
+    "type": "synonym",
+    "answer": "ordinaire",
+    "options": ["ordinaire", "rare", "unique", "précieux"]
+  },
+  {
+    "word": "faire",
+    "type": "wordFamily",
+    "answer": "défaire",
+    "options": ["défaire", "refaire", "démarche", "dernière"]
+  },
+  {
+    "word": "prendre",
+    "type": "wordFamily",
+    "answer": "surprendre",
+    "options": ["surprendre", "surnager", "survoler", "surligner"]
+  },
+  {
+    "word": "chanter",
+    "type": "wordFamily",
+    "answer": "rechanter",
+    "options": ["rechanter", "charger", "changer", "chaleur"]
+  },
+  {
+    "word": "porter",
+    "type": "wordFamily",
+    "answer": "supporter",
+    "options": ["supporter", "sportif", "portail", "porcelaine"]
+  },
+  {
+    "word": "dire",
+    "type": "wordFamily",
+    "answer": "redire",
+    "options": ["redire", "rédiger", "réduire", "refaire"]
+  },
+  {
+    "word": "banque, magasin, cinéma",
+    "type": "lexicalField",
+    "answer": "lieux",
+    "options": ["lieux", "transports", "objets", "vêtements"]
+  },
+  {
+    "word": "pluie, vent, neige",
+    "type": "lexicalField",
+    "answer": "météo",
+    "options": ["météo", "sports", "métiers", "vêtements"]
+  },
+  {
+    "word": "pain, riz, pâtes",
+    "type": "lexicalField",
+    "answer": "féculents",
+    "options": ["féculents", "fruits", "boissons", "meubles"]
+  },
+  {
+    "word": "girafe, lion, éléphant",
+    "type": "lexicalField",
+    "answer": "animaux",
+    "options": ["animaux", "plantes", "objets", "outils"]
+  },
+  {
+    "word": "pantalon, chemise, robe",
+    "type": "lexicalField",
+    "answer": "vêtements",
+    "options": ["vêtements", "meubles", "instruments", "métiers"]
+  }
+]
